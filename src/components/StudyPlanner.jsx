@@ -84,6 +84,23 @@ export default function StudyPlanner() {
     return subjectEmojis[key] || '📘';
   };
 
+  const handleGeminiClick = (e, prompt) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(prompt).then(() => {
+      alert('✨ Prompt copied to clipboard!\n\nPaste it into the chat once Gemini opens.');
+      window.open('https://gemini.google.com/app', '_blank');
+    }).catch(() => {
+      window.open('https://gemini.google.com/app', '_blank');
+    });
+  };
+
+  const handleLinkClick = (e, url) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       <div className="page-header">
@@ -218,11 +235,9 @@ export default function StudyPlanner() {
                               return (
                                 <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                                   <a 
-                                    href={`https://gemini.google.com/app?prompt=${encodeURIComponent(geminiPrompt)}`}
-                                    target="_blank" 
-                                    rel="noreferrer"
+                                    href="#"
                                     style={{ color: 'var(--blue)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => handleGeminiClick(e, geminiPrompt)}
                                     title="Deep Dive with Gemini"
                                   >
                                     <span>{t.name}</span>
@@ -231,11 +246,9 @@ export default function StudyPlanner() {
                                   {t.subTopics.length > 0 && <span style={{ color: 'var(--text-muted)' }}> ({t.subTopics.join(', ')})</span>}
                                   {t.videoLink && (
                                     <a 
-                                      href={t.videoLink}
-                                      target="_blank"
-                                      rel="noreferrer"
+                                      href="#"
                                       style={{ marginLeft: 8, fontSize: 11, color: 'var(--color-test)', textDecoration: 'none' }}
-                                      onClick={(e) => e.stopPropagation()}
+                                      onClick={(e) => handleLinkClick(e, t.videoLink)}
                                     >
                                       [▶️ Watch Original Video]
                                     </a>
@@ -263,8 +276,8 @@ export default function StudyPlanner() {
                       </div>
                       <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 12 }}>{s.testTopics}</div>
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <a href={`https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(s.testTopics)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>🔍 YouTube Search</a>
-                        <a href={`https://gemini.google.com/app?prompt=Create+a+practice+quiz+for+a+3rd+grader+studying+${encodeURIComponent(s.name)}+on+the+topic+of+${encodeURIComponent(s.testTopics)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>✨ Generate Quiz with Gemini</a>
+                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleLinkClick(e, `https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(s.testTopics)}`)}>🔍 YouTube Search</a>
+                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Create a practice quiz for a 3rd grader studying ${s.name} on the topic of ${s.testTopics}`)}>✨ Generate Quiz with Gemini</a>
                       </div>
                     </div>
                   ))
@@ -285,7 +298,7 @@ export default function StudyPlanner() {
                       </div>
                       <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 12 }}>{s.seaTopics}</div>
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <a href={`https://gemini.google.com/app?prompt=Give+me+some+fun+project+ideas+for+a+3rd+grade+${encodeURIComponent(s.name)}+Enrichment+Activity+about+${encodeURIComponent(s.seaTopics)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>✨ Brainstorm Ideas with Gemini</a>
+                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Give me some fun project ideas for a 3rd grade ${s.name} Enrichment Activity about ${s.seaTopics}`)}>✨ Brainstorm Ideas with Gemini</a>
                       </div>
                     </div>
                   ))
@@ -317,11 +330,11 @@ export default function StudyPlanner() {
                           {t.subTopics.length > 0 && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>Subtopics: {t.subTopics.join(', ')}</div>}
                         </td>
                         <td style={{ padding: '12px 20px' }}>
-                          <a href={`https://gemini.google.com/app?prompt=${encodeURIComponent(geminiPrompt)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '6px 12px', fontSize: 11, background: 'rgba(59, 130, 246, 0.1)', color: 'var(--blue)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }}>
+                          <a href="#" className="btn btn-sm" style={{ padding: '6px 12px', fontSize: 11, background: 'rgba(59, 130, 246, 0.1)', color: 'var(--blue)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }} onClick={(e) => handleGeminiClick(e, geminiPrompt)}>
                             ✨ Deep Dive with Gemini
                           </a>
                           {t.videoLink && (
-                            <a href={t.videoLink} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '6px 12px', marginTop: 8, fontSize: 11, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }}>
+                            <a href="#" className="btn btn-sm" style={{ padding: '6px 12px', marginTop: 8, fontSize: 11, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }} onClick={(e) => handleLinkClick(e, t.videoLink)}>
                               ▶️ Watch Video
                             </a>
                           )}

@@ -139,6 +139,23 @@ export default function TodoManager() {
     personal: '✏️',
   };
 
+  const handleGeminiClick = (e, prompt) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(prompt).then(() => {
+      alert('✨ Prompt copied to clipboard!\n\nPaste it into the chat once Gemini opens.');
+      window.open('https://gemini.google.com/app', '_blank');
+    }).catch(() => {
+      window.open('https://gemini.google.com/app', '_blank');
+    });
+  };
+
+  const handleLinkClick = (e, url) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank');
+  };
+
   // Grouping logic
   const parseTodoDate = (d) => {
     if (!d) return null;
@@ -321,33 +338,27 @@ export default function TodoManager() {
                           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                             {item.sourceFile && (
                               <a 
-                                href={`/docs/${item.sourceFile}`}
-                                target="_blank" 
-                                rel="noreferrer"
+                                href="#"
                                 style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => handleLinkClick(e, `/docs/${item.sourceFile}`)}
                                 title="Click to open Original PDF"
                         >
                           📄 View Original PDF
                         </a>
                       )}
-                      {(item.category === 'test' || item.category === 'sea' || item.category === 'homework') && (
+                      {item.subject && (
                         <>
                           <a 
-                            href={`https://gemini.google.com/app?q=${encodeURIComponent(`Explain the 3rd grade topic: ${item.topic || item.text} for subject ${item.subject}`)}`}
-                            target="_blank" 
-                            rel="noreferrer"
+                            href="#"
                             style={{ fontSize: 12, color: '#10b981', textDecoration: 'none', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => handleGeminiClick(e, `Explain the topic ${item.topic || item.text} for ${item.subject} to a 3rd grader`)}
                           >
                             ✨ Ask Gemini to Explain
                           </a>
                           <a 
-                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`grade 3 ${item.subject} ${item.topic || item.text}`)}`}
-                            target="_blank" 
-                            rel="noreferrer"
+                            href="#"
                             style={{ fontSize: 12, color: '#ef4444', textDecoration: 'none', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => handleLinkClick(e, `https://www.youtube.com/results?search_query=${encodeURIComponent(`grade 3 ${item.subject} ${item.topic || item.text}`)}`)}
                           >
                             ▶️ Search YouTube Lessons
                           </a>
@@ -356,11 +367,9 @@ export default function TodoManager() {
                       
                       {item.subject && item.topic && (
                         <a 
-                          href={`https://gemini.google.com/app?prompt=Create+a+study+guide+or+quiz+for+a+3rd+grader+studying+${encodeURIComponent(item.subject)}+on+the+topic+of+${encodeURIComponent(item.topic)}`}
-                          target="_blank" 
-                          rel="noreferrer"
+                          href="#"
                           style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => handleGeminiClick(e, `Create a study guide or quiz for a 3rd grader studying ${item.subject} on the topic of ${item.topic}`)}
                         >
                           ✨ Learn with Gemini
                         </a>
