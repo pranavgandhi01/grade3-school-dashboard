@@ -139,6 +139,73 @@ export default function TodoManager() {
     personal: '✏️',
   };
 
+  // Grouping logic
+  const parseTodoDate = (d) => {
+    if (!d) return null;
+    const months = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+    
+    // Format: DD/MM/YYYY
+    let m = d.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (m) {
+      return new Date(parseInt(m[3]), parseInt(m[2]) - 1, parseInt(m[1]));
+    }
+    // Format: DD-MMM-YYYY
+    m = d.match(/(\d{1,2})-(\w{3})-(\d{2,4})/);
+    if (m) {
+      let yr = m[3].length === 2 ? 2000 + parseInt(m[3]) : parseInt(m[3]);
+      return new Date(yr, months[m[2]], parseInt(m[1]));
+    }
+    return null;
+  };
+
+  const groupTodos = (items) => {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const groups = {
+      '🚨 Overdue': [],
+      '⚡ Immediate (Today/Tomorrow)': [],
+      '📅 Upcoming': [],
+      '📌 No Due Date': []
+    };
+
+    items.forEach(item => {
+      if (!item.dueDate) {
+        groups['📌 No Due Date'].push(item);
+        return;
+      }
+      const dateObj = parseTodoDate(item.dueDate);
+      if (!dateObj) {
+        groups['📌 No Due Date'].push(item);
+        return;
+      }
+      
+      dateObj.setHours(0,0,0,0);
+      if (dateObj < today) {
+        groups['🚨 Overdue'].push(item);
+      } else if (dateObj <= tomorrow) {
+        groups['⚡ Immediate (Today/Tomorrow)'].push(item);
+      } else {
+        groups['📅 Upcoming'].push(item);
+      }
+    });
+
+    // Sort items within each group
+    Object.keys(groups).forEach(k => {
+      groups[k].sort((a, b) => {
+        const da = parseTodoDate(a.dueDate) || new Date(8640000000000000); // max date
+        const db = parseTodoDate(b.dueDate) || new Date(8640000000000000);
+        return da - db;
+      });
+    });
+
+    return Object.entries(groups).filter(([_, groupItems]) => groupItems.length > 0);
+  };
+
+  const groupedFiltered = groupTodos(filtered);
+
   return (
     <>
       <div className="page-header">
@@ -190,64 +257,70 @@ export default function TodoManager() {
           </div>
         </div>
 
-        {/* Todo List */}
-        <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {filtered.map((item) => {
-            const isExpanded = expandedItemId === item.id;
-            return (
-              <div 
-                className={`todo-item ${item.completed ? 'completed' : ''}`} 
-                key={item.id} 
-                style={{ flexDirection: 'column', alignItems: 'stretch', cursor: 'pointer' }}
-                onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                  <div
-                    className={`todo-checkbox ${item.completed ? 'checked' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); toggleItem(item.id); }}
-                    style={{ marginTop: 2 }}
-                  >
-                    {item.completed && '✓'}
-                  </div>
-                  <div className="todo-text" style={{ flex: 1 }}>
-                    <div className={item.completed ? 'todo-text done' : ''} style={{ fontSize: 14, fontWeight: 500 }}>
-                      {categoryIcons[item.category] || '📋'} {item.text}
-                    </div>
-                    <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span className={`tag ${categoryColors[item.category] || 'tag-blue'}`}>{item.category}</span>
-                      {item.subject && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.subject}</span>}
-                      {item.dueDate && <span className="todo-due">📅 Due: {item.dueDate}</span>}
-                      {item.date && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>From: {item.date}</span>}
-                    </div>
-                  </div>
-                  {item.source === 'manual' && (
-                    <button
-                      className="btn btn-sm"
-                      onClick={(e) => { e.stopPropagation(); deleteTodo(item.id); }}
-                      style={{ color: 'var(--color-holiday)', fontSize: 14, padding: '4px 8px' }}
+        {/* Todo List Grouped */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {groupedFiltered.map(([groupName, groupItems]) => (
+            <div key={groupName}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>
+                {groupName} ({groupItems.length})
+              </div>
+              <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {groupItems.map((item) => {
+                  const isExpanded = expandedItemId === item.id;
+                  return (
+                    <div 
+                      className={`todo-item ${item.completed ? 'completed' : ''}`} 
+                      key={item.id} 
+                      style={{ flexDirection: 'column', alignItems: 'stretch', cursor: 'pointer' }}
+                      onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
                     >
-                      ✕
-                    </button>
-                  )}
-                </div>
-
-                {isExpanded && (
-                  <div style={{ marginTop: 12, marginLeft: 28, padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-                    {item.topic && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Topic / Details</div>
-                        <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>{item.topic}</div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+                        <div
+                          className={`todo-checkbox ${item.completed ? 'checked' : ''}`}
+                          onClick={(e) => { e.stopPropagation(); toggleItem(item.id); }}
+                          style={{ marginTop: 2 }}
+                        >
+                          {item.completed && '✓'}
+                        </div>
+                        <div className="todo-text" style={{ flex: 1 }}>
+                          <div className={item.completed ? 'todo-text done' : ''} style={{ fontSize: 14, fontWeight: 500 }}>
+                            {categoryIcons[item.category] || '📋'} {item.text}
+                          </div>
+                          <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+                            <span className={`tag ${categoryColors[item.category] || 'tag-blue'}`}>{item.category}</span>
+                            {item.subject && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.subject}</span>}
+                            {item.dueDate && <span className="todo-due">📅 Due: {item.dueDate}</span>}
+                            {item.date && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>From: {item.date}</span>}
+                          </div>
+                        </div>
+                        {item.source === 'manual' && (
+                          <button
+                            className="btn btn-sm"
+                            onClick={(e) => { e.stopPropagation(); deleteTodo(item.id); }}
+                            style={{ color: 'var(--color-holiday)', fontSize: 14, padding: '4px 8px' }}
+                          >
+                            ✕
+                          </button>
+                        )}
                       </div>
-                    )}
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                      {item.sourceFile && (
-                        <a 
-                          href={`/docs/${item.sourceFile}`}
-                          target="_blank" 
-                          rel="noreferrer"
-                          style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                          onClick={(e) => e.stopPropagation()}
-                          title="Click to open Original PDF"
+      
+                      {isExpanded && (
+                        <div style={{ marginTop: 12, marginLeft: 28, padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                          {item.topic && (
+                            <div style={{ marginBottom: 12 }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Topic / Details</div>
+                              <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>{item.topic}</div>
+                            </div>
+                          )}
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            {item.sourceFile && (
+                              <a 
+                                href={`/docs/${item.sourceFile}`}
+                                target="_blank" 
+                                rel="noreferrer"
+                                style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
+                                onClick={(e) => e.stopPropagation()}
+                                title="Click to open Original PDF"
                         >
                           📄 View Original PDF
                         </a>
@@ -274,20 +347,34 @@ export default function TodoManager() {
                           </a>
                         </>
                       )}
+                      
+                      {item.subject && item.topic && (
+                        <a 
+                          href={`https://gemini.google.com/app?prompt=Create+a+study+guide+or+quiz+for+a+3rd+grader+studying+${encodeURIComponent(item.subject)}+on+the+topic+of+${encodeURIComponent(item.topic)}`}
+                          target="_blank" 
+                          rel="noreferrer"
+                          style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          ✨ Learn with Gemini
+                        </a>
+                      )}
                     </div>
                   </div>
                 )}
               </div>
             );
           })}
+              </div>
+            </div>
+          ))}
+          {groupedFiltered.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-state-icon">✅</div>
+              <div className="empty-state-text">You're all caught up!</div>
+            </div>
+          )}
         </div>
-
-        {filtered.length === 0 && (
-          <div className="empty-state">
-            <div className="empty-state-icon">✅</div>
-            <div className="empty-state-text">No items match this filter</div>
-          </div>
-        )}
       </div>
     </>
   );
