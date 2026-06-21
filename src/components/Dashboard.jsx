@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { HOLIDAYS, EVENTS, DAILY_UPDATES, REVIEW_SCHEDULE, DICTATION_WORDS, SPA_ACTIVITIES } from '../data/schoolData';
+import { HOLIDAYS, EVENTS, REVIEW_SCHEDULE, DICTATION_WORDS, SPA_ACTIVITIES } from '../data/schoolData';
+import { useUpdatesContext } from '../context/UpdatesContext';
 
 function getNextEvent(events, holidays) {
   const now = new Date();
@@ -46,6 +47,8 @@ export default function Dashboard({ setActivePage }) {
   const dateStr = today.toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
+  
+  const { updates: DAILY_UPDATES, loading } = useUpdatesContext();
 
   const upcoming = getNextEvent(EVENTS, HOLIDAYS);
   const nextHoliday = upcoming.find(e => e.type === 'holiday');

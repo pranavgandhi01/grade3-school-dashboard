@@ -10,6 +10,7 @@ import TodoManager from './components/TodoManager';
 import DictationWords from './components/DictationWords';
 import Events from './components/Events';
 import CafeteriaMenu from './components/CafeteriaMenu';
+import AdminPortal from './components/AdminPortal';
 
 const NAV_ITEMS = [
   { id: 'dashboard', icon: '📊', label: 'Dashboard', section: 'overview' },
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { id: 'dictation', icon: '📖', label: 'Dictation Words', section: 'academics' },
   { id: 'events', icon: '🎯', label: 'Events & Activities', section: 'school' },
   { id: 'menu', icon: '🍽️', label: 'Cafeteria Menu', section: 'school' },
+  { id: 'admin', icon: '⚙️', label: 'Admin Portal', section: 'settings' },
 ];
 
 const PAGES = {
@@ -31,6 +33,7 @@ const PAGES = {
   dictation: DictationWords,
   events: Events,
   menu: CafeteriaMenu,
+  admin: AdminPortal,
 };
 
 function App() {

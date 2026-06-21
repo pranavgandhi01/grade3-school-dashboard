@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { DAILY_UPDATES } from '../data/schoolData';
+import { useUpdatesContext } from '../context/UpdatesContext';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const subjectColors = {
   'ENGLISH': 'var(--blue)',
@@ -21,16 +23,25 @@ function getSubjectColor(subject) {
 }
 
 export default function DailyUpdates() {
-  const [selectedIndex, setSelectedIndex] = useState(DAILY_UPDATES.length - 1);
+  const { updates, loading } = useUpdatesContext();
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const update = DAILY_UPDATES[selectedIndex];
-  const sorted = [...DAILY_UPDATES].reverse();
+  if (loading) {
+    return <div className="page-header"><div className="page-title">Loading...</div></div>;
+  }
+
+  // Ensure index is within bounds
+  const safeIndex = selectedIndex >= updates.length ? updates.length - 1 : selectedIndex;
+  const update = updates[safeIndex];
+  const sorted = [...updates].reverse();
 
   return (
     <>
-      <div className="page-header">
-        <div className="page-title">📝 Daily Updates</div>
-        <div className="page-subtitle">{DAILY_UPDATES.length} days of updates from class 3B WhatsApp group</div>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div className="page-title">📝 Daily Updates</div>
+          <div className="page-subtitle">{updates.length} days of updates from class 3B WhatsApp group</div>
+        </div>
       </div>
 
       <div className="page-body">
@@ -44,11 +55,11 @@ export default function DailyUpdates() {
               <div className="card-body" style={{ padding: 8 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   {sorted.map((u, i) => {
-                    const realIndex = DAILY_UPDATES.length - 1 - i;
+                    const realIndex = updates.length - 1 - i;
                     return (
                       <div
                         key={i}
-                        className={`nav-item ${selectedIndex === realIndex ? 'active' : ''}`}
+                        className={`nav-item ${safeIndex === realIndex ? 'active' : ''}`}
                         onClick={() => setSelectedIndex(realIndex)}
                         style={{ padding: '8px 12px' }}
                       >
@@ -58,6 +69,7 @@ export default function DailyUpdates() {
                   })}
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -81,7 +93,7 @@ export default function DailyUpdates() {
                       </a>
                     )}
                     <button className="btn btn-sm" disabled={selectedIndex <= 0} onClick={() => setSelectedIndex(i => i - 1)}>← Prev</button>
-                    <button className="btn btn-sm" disabled={selectedIndex >= DAILY_UPDATES.length - 1} onClick={() => setSelectedIndex(i => i + 1)}>Next →</button>
+                    <button className="btn btn-sm" disabled={selectedIndex >= updates.length - 1} onClick={() => setSelectedIndex(i => i + 1)}>Next →</button>
                   </div>
                 </div>
 
@@ -175,6 +187,29 @@ export default function DailyUpdates() {
                           <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>No new words.</div>
                         )}
                       </div>
+                      {/* Attachments Section */}
+                      {update.attachments && update.attachments.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>Attachments</div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            {update.attachments.map((file, i) => (
+                              <a 
+                                key={i} 
+                                href={file.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{ 
+                                  display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', 
+                                  background: 'var(--bg-secondary)', borderRadius: '6px', 
+                                  color: 'var(--blue)', textDecoration: 'none', fontSize: 13, fontWeight: 500
+                                }}
+                              >
+                                📎 {file.name}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 

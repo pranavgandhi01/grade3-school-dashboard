@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { DAILY_UPDATES, REVIEW_SCHEDULE } from '../data/schoolData';
+import { REVIEW_SCHEDULE } from '../data/schoolData';
+import { useUpdatesContext } from '../context/UpdatesContext';
 
 const STORAGE_KEY = 'vibgyor-todos';
 
@@ -15,7 +16,7 @@ function saveTodos(todos) {
 }
 
 // Auto-generate homework todos from daily updates
-function getHomeworkItems() {
+function getHomeworkItems(DAILY_UPDATES) {
   const items = [];
   DAILY_UPDATES.forEach(update => {
     update.periods.forEach(p => {
@@ -65,13 +66,15 @@ function getHomeworkItems() {
 }
 
 export default function TodoManager() {
+  const { updates: DAILY_UPDATES } = useUpdatesContext();
+  const [activeTab, setActiveTab] = useState('pending');
   const [todos, setTodos] = useState(loadTodos);
   const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState('all');
   const [newCategory, setNewCategory] = useState('personal');
   const [expandedItemId, setExpandedItemId] = useState(null);
 
-  const hwItems = getHomeworkItems();
+  const hwItems = getHomeworkItems(DAILY_UPDATES);
 
   // Merge auto items with manual todos
   const allItems = [

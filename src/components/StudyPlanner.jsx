@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { REVIEW_SCHEDULE, DAILY_UPDATES } from '../data/schoolData';
+import { REVIEW_SCHEDULE } from '../data/schoolData';
+import { useUpdatesContext } from '../context/UpdatesContext';
 
 // Build study plan from daily updates and review schedule
-function buildStudyPlan() {
+function buildStudyPlan(DAILY_UPDATES) {
   const subjects = {};
 
   // Gather topics from daily updates
@@ -56,8 +57,9 @@ function buildStudyPlan() {
 }
 
 export default function StudyPlanner() {
+  const { updates: DAILY_UPDATES } = useUpdatesContext();
   const [activeView, setActiveView] = useState('subjects');
-  const studyPlan = buildStudyPlan();
+  const studyPlan = buildStudyPlan(DAILY_UPDATES);
 
   const subjectEmojis = {
     'ENGLISH': '📚',
