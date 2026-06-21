@@ -86,12 +86,12 @@ export default function StudyPlanner() {
 
   const getSubjectContext = (subjectName) => {
     const s = subjectName.toUpperCase();
-    if (s.includes('ROBOTICS')) return "This is for CBSE Grade 3 Robotics, which uses Tinkercad for 3D design and basic circuits. Explain concepts with Tinkercad in mind.";
-    if (s.includes('FIT') || s.includes('COMPUTER')) return "This is for CBSE Grade 3 IT/FIT, which covers basic Scratch programming, MS Word, and Tux Paint.";
-    if (s.includes('MATH')) return "This is for CBSE Grade 3 Mathematics (basic arithmetic, time, money, simple geometry).";
-    if (s.includes('SCIENCE') || s.includes('EVS') || s.includes('ENVIRONMENT')) return "This is for CBSE Grade 3 Environmental Studies (EVS) / Science.";
-    if (s.includes('ENGLISH')) return "This is for CBSE Grade 3 English grammar and literature.";
-    if (s.includes('HINDI')) return "This is for CBSE Grade 3 Hindi grammar (Vyakaran) and literature.";
+    if (s.includes('ROBOTICS')) return "This is for CBSE Grade 3 Robotics. Skills: Tinkercad 3D modeling, basic electrical circuits. Suggested tools: Tinkercad, Code.org.";
+    if (s.includes('FIT') || s.includes('COMPUTER')) return "This is for CBSE Grade 3 IT/FIT. Skills: Scratch visual programming, MS Word formatting, Tux Paint drawing.";
+    if (s.includes('MATH')) return "This is for CBSE Grade 3 Mathematics. Skills: Addition, Subtraction, basic Multiplication, Time, Money, Shapes. Suggested tools: Khan Academy Kids, Prodigy Math.";
+    if (s.includes('SCIENCE') || s.includes('EVS') || s.includes('ENVIRONMENT')) return "This is for CBSE Grade 3 Environmental Studies (EVS) / Science. Skills: Plants, animals, water, weather, human body. Suggested tools: National Geographic Kids, Dr. Binocs Show.";
+    if (s.includes('ENGLISH')) return "This is for CBSE Grade 3 English. Skills: Grammar (nouns, verbs, adjectives), Reading Comprehension, Creative Writing. Suggested tools: Epic! reading, Oxford Owl.";
+    if (s.includes('HINDI')) return "This is for CBSE Grade 3 Hindi. Skills: Vyakaran (grammar), vocabulary building, sentence formation. Suggested tools: Hindi Kahaniya for kids, Panchatantra stories.";
     if (s.includes('MARATHI')) return "This is for Grade 3 basic Marathi language learning.";
     return "This is for the standard CBSE Grade 3 syllabus.";
   };
@@ -243,7 +243,7 @@ export default function StudyPlanner() {
                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>Topics Covered</div>
                           <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {s.topics.map((t, idx) => {
-                              const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nContext: ${getSubjectContext(s.name)}\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 2 exciting examples of how this is used in real life (e.g., video games, space, animals, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!`;
+                              const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nContext: ${getSubjectContext(s.name)}\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 4 exciting examples of how this is used in real life (e.g., video games, space, nature, robots, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!\n4. 📺 Deep Dive Resources: Provide 2 exact YouTube search terms or kid-friendly video links (like Dr. Binocs, Crash Course Kids) and 1 interactive online game/tool (like Khan Academy, Scratch) where they can practice this.`;
                               return (
                                 <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                                   <a 
@@ -332,7 +332,7 @@ export default function StudyPlanner() {
                 </thead>
                 <tbody>
                   {studyPlan.flatMap(s => s.topics.map((t, idx) => {
-                    const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nContext: ${getSubjectContext(s.name)}\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 2 exciting examples of how this is used in real life (e.g., video games, space, animals, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!`;
+                    const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nContext: ${getSubjectContext(s.name)}\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 4 exciting examples of how this is used in real life (e.g., video games, space, nature, robots, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!\n4. 📺 Deep Dive Resources: Provide 2 exact YouTube search terms or kid-friendly video links (like Dr. Binocs, Crash Course Kids) and 1 interactive online game/tool (like Khan Academy, Scratch) where they can practice this.`;
                     return (
                       <tr key={`${s.name}-${idx}`}>
                         <td style={{ padding: '12px 20px', fontWeight: 600 }}>{getEmoji(s.name)} {s.name}</td>

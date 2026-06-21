@@ -142,12 +142,12 @@ export default function TodoManager() {
   const getSubjectContext = (subjectName) => {
     if (!subjectName) return '';
     const s = subjectName.toUpperCase();
-    if (s.includes('ROBOTICS')) return "This is for CBSE Grade 3 Robotics, which uses Tinkercad for 3D design and basic circuits. Explain concepts with Tinkercad in mind.";
-    if (s.includes('FIT') || s.includes('COMPUTER')) return "This is for CBSE Grade 3 IT/FIT, which covers basic Scratch programming, MS Word, and Tux Paint.";
-    if (s.includes('MATH')) return "This is for CBSE Grade 3 Mathematics (basic arithmetic, time, money, simple geometry).";
-    if (s.includes('SCIENCE') || s.includes('EVS') || s.includes('ENVIRONMENT')) return "This is for CBSE Grade 3 Environmental Studies (EVS) / Science.";
-    if (s.includes('ENGLISH')) return "This is for CBSE Grade 3 English grammar and literature.";
-    if (s.includes('HINDI')) return "This is for CBSE Grade 3 Hindi grammar (Vyakaran) and literature.";
+    if (s.includes('ROBOTICS')) return "This is for CBSE Grade 3 Robotics. Skills: Tinkercad 3D modeling, basic electrical circuits. Suggested tools: Tinkercad, Code.org.";
+    if (s.includes('FIT') || s.includes('COMPUTER')) return "This is for CBSE Grade 3 IT/FIT. Skills: Scratch visual programming, MS Word formatting, Tux Paint drawing.";
+    if (s.includes('MATH')) return "This is for CBSE Grade 3 Mathematics. Skills: Addition, Subtraction, basic Multiplication, Time, Money, Shapes. Suggested tools: Khan Academy Kids, Prodigy Math.";
+    if (s.includes('SCIENCE') || s.includes('EVS') || s.includes('ENVIRONMENT')) return "This is for CBSE Grade 3 Environmental Studies (EVS) / Science. Skills: Plants, animals, water, weather, human body. Suggested tools: National Geographic Kids, Dr. Binocs Show.";
+    if (s.includes('ENGLISH')) return "This is for CBSE Grade 3 English. Skills: Grammar (nouns, verbs, adjectives), Reading Comprehension, Creative Writing. Suggested tools: Epic! reading, Oxford Owl.";
+    if (s.includes('HINDI')) return "This is for CBSE Grade 3 Hindi. Skills: Vyakaran (grammar), vocabulary building, sentence formation. Suggested tools: Hindi Kahaniya for kids, Panchatantra stories.";
     if (s.includes('MARATHI')) return "This is for Grade 3 basic Marathi language learning.";
     return "This is for the standard CBSE Grade 3 syllabus.";
   };
@@ -364,7 +364,7 @@ export default function TodoManager() {
                           <a 
                             href="#"
                             style={{ fontSize: 12, color: '#10b981', textDecoration: 'none', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                            onClick={(e) => handleGeminiClick(e, `Act as an expert, fun tutor for an 8-year-old (Grade 3).\n\nExplain the topic: "${item.topic || item.text}" for the subject ${item.subject}.\n\nContext: ${getSubjectContext(item.subject)}\n\nFormat your response:\n1. 🌟 The Big Idea (use a fun analogy)\n2. 🚀 Why It's Cool (real-world example)\n3. 🧠 Quick Quiz (1 interactive question to test them)`)}
+                            onClick={(e) => handleGeminiClick(e, `Act as an expert, fun tutor for an 8-year-old (Grade 3).\n\nExplain the topic: "${item.topic || item.text}" for the subject ${item.subject}.\n\nContext: ${getSubjectContext(item.subject)}\n\nFormat your response:\n1. 🌟 The Big Idea (use a fun analogy)\n2. 🚀 Why It's Cool (4 real-world examples)\n3. 🧠 Quick Quiz (1 interactive question to test them)\n4. 📺 Deep Dive Resources (Provide 2 YouTube search terms/links and 1 online game to practice)`)}
                           >
                             ✨ Ask Gemini to Explain
                           </a>
