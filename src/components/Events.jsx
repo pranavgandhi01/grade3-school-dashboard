@@ -29,7 +29,7 @@ export default function Events() {
       if (m) { let yr = m[3].length === 2 ? 2000 + parseInt(m[3]) : parseInt(m[3]); return new Date(yr, months[m[2]], parseInt(m[1])).getTime(); }
       return 0;
     };
-    return parse(a.date) - parse(b.date);
+    return parse(b.date) - parse(a.date); // Sort descending
   });
 
   const tabs = [
@@ -73,15 +73,31 @@ export default function Events() {
                           <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>📅 {event.date}</span>
                         </div>
                       </div>
-                      <button
-                        className="btn btn-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          downloadICS([{ name: event.name, date: event.date, description: event.details || '' }], `${event.name.replace(/\s+/g, '-')}.ics`);
-                        }}
-                      >
-                        📅
-                      </button>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {event.source_url && (
+                          <a
+                            href={event.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm"
+                            style={{ textDecoration: 'none', background: 'var(--bg-secondary)', color: 'var(--blue)' }}
+                            onClick={(e) => e.stopPropagation()}
+                            title="View Source PDF"
+                          >
+                            📎 PDF
+                          </a>
+                        )}
+                        <button
+                          className="btn btn-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downloadICS([{ name: event.name, date: event.date, description: event.details || '' }], `${event.name.replace(/\s+/g, '-')}.ics`);
+                          }}
+                          title="Add to Calendar"
+                        >
+                          📅
+                        </button>
+                      </div>
                     </div>
 
                     {isExpanded && event.details && (
