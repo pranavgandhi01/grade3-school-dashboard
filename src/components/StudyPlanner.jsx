@@ -231,7 +231,7 @@ export default function StudyPlanner() {
                           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>Topics Covered</div>
                           <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {s.topics.map((t, idx) => {
-                              const geminiPrompt = `Explain the Grade 3 ${s.name} topic "${t.name}" to an 8-year-old child in a fun, engaging way. Include real-world examples and a short interactive quiz at the end.`;
+                              const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 2 exciting examples of how this is used in real life (e.g., video games, space, animals, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!`;
                               return (
                                 <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                                   <a 
@@ -277,7 +277,7 @@ export default function StudyPlanner() {
                       <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 12 }}>{s.testTopics}</div>
                       <div style={{ display: 'flex', gap: 8 }}>
                         <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleLinkClick(e, `https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(s.testTopics)}`)}>🔍 YouTube Search</a>
-                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Create a practice quiz for a 3rd grader studying ${s.name} on the topic of ${s.testTopics}`)}>✨ Generate Quiz with Gemini</a>
+                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Act as a fun, encouraging teacher. Create a 5-question practice quiz for an 8-year-old studying ${s.name} on the topic of "${s.testTopics}".\n\nMake the questions interactive. Ask them one at a time, wait for my child's answer, and provide a helpful, cheerful hint if they get it wrong!`)}>✨ Generate Quiz with Gemini</a>
                       </div>
                     </div>
                   ))
@@ -298,7 +298,7 @@ export default function StudyPlanner() {
                       </div>
                       <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 12 }}>{s.seaTopics}</div>
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Give me some fun project ideas for a 3rd grade ${s.name} Enrichment Activity about ${s.seaTopics}`)}>✨ Brainstorm Ideas with Gemini</a>
+                        <a href="#" className="btn btn-sm" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }} onClick={(e) => handleGeminiClick(e, `Act as a creative learning expert for kids. Give me 3 incredibly fun, hands-on project ideas for a 3rd grade ${s.name} Enrichment Activity about "${s.seaTopics}".\n\nFor each idea, include:\n- A catchy title\n- What simple household materials we need\n- Step-by-step instructions for an 8-year-old.`)}>✨ Brainstorm Ideas with Gemini</a>
                       </div>
                     </div>
                   ))
@@ -320,7 +320,7 @@ export default function StudyPlanner() {
                 </thead>
                 <tbody>
                   {studyPlan.flatMap(s => s.topics.map((t, idx) => {
-                    const geminiPrompt = `Explain the Grade 3 ${s.name} topic "${t.name}" to an 8-year-old child in a fun, engaging way. Include real-world examples and a short interactive quiz at the end.`;
+                    const geminiPrompt = `Act as an expert, fun, and encouraging tutor for an 8-year-old (Grade 3).\n\nYour task is to explain the ${s.name} topic: "${t.name}".\n\nPlease format your response like this:\n1. 🌟 The Big Idea: Explain the core concept using a fun, real-world analogy that an 8-year-old will immediately understand.\n2. 🚀 Why It's Cool: Give 2 exciting examples of how this is used in real life (e.g., video games, space, animals, etc).\n3. 🧠 Quick Quiz: Give 2 multiple-choice questions to test their understanding. Ask them to answer before you reveal the truth!`;
                     return (
                       <tr key={`${s.name}-${idx}`}>
                         <td style={{ padding: '12px 20px', fontWeight: 600 }}>{getEmoji(s.name)} {s.name}</td>

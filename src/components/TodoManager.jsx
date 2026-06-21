@@ -351,7 +351,7 @@ export default function TodoManager() {
                           <a 
                             href="#"
                             style={{ fontSize: 12, color: '#10b981', textDecoration: 'none', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                            onClick={(e) => handleGeminiClick(e, `Explain the topic ${item.topic || item.text} for ${item.subject} to a 3rd grader`)}
+                            onClick={(e) => handleGeminiClick(e, `Act as an expert, fun tutor for an 8-year-old (Grade 3).\n\nExplain the topic: "${item.topic || item.text}" for the subject ${item.subject}.\n\nFormat your response:\n1. 🌟 The Big Idea (use a fun analogy)\n2. 🚀 Why It's Cool (real-world example)\n3. 🧠 Quick Quiz (1 interactive question to test them)`)}
                           >
                             ✨ Ask Gemini to Explain
                           </a>
@@ -369,7 +369,7 @@ export default function TodoManager() {
                         <a 
                           href="#"
                           style={{ fontSize: 12, color: 'var(--text-primary)', textDecoration: 'none', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6 }}
-                          onClick={(e) => handleGeminiClick(e, `Create a study guide or quiz for a 3rd grader studying ${item.subject} on the topic of ${item.topic}`)}
+                          onClick={(e) => handleGeminiClick(e, `Act as a fun, encouraging teacher. Create a 5-question practice quiz for a 3rd grader studying ${item.subject} on the topic of "${item.topic}".\n\nMake the questions interactive. Ask them one at a time, wait for the child's answer, and provide a helpful, cheerful hint if they get it wrong!`)}
                         >
                           ✨ Learn with Gemini
                         </a>
