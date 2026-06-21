@@ -213,20 +213,36 @@ export default function StudyPlanner() {
                         <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>Topics Covered</div>
                           <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            {s.topics.map((t, idx) => (
-                              <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                                <a 
-                                  href={t.videoLink || `https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(t.name)}`} 
-                                  target="_blank" 
-                                  rel="noreferrer"
-                                  style={{ color: 'var(--blue)', textDecoration: 'none' }}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  {t.name}
-                                </a>
-                                {t.subTopics.length > 0 && <span style={{ color: 'var(--text-muted)' }}> ({t.subTopics.join(', ')})</span>}
-                              </li>
-                            ))}
+                            {s.topics.map((t, idx) => {
+                              const geminiPrompt = `Explain the Grade 3 ${s.name} topic "${t.name}" to an 8-year-old child in a fun, engaging way. Include real-world examples and a short interactive quiz at the end.`;
+                              return (
+                                <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                                  <a 
+                                    href={`https://gemini.google.com/app?prompt=${encodeURIComponent(geminiPrompt)}`}
+                                    target="_blank" 
+                                    rel="noreferrer"
+                                    style={{ color: 'var(--blue)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}
+                                    onClick={(e) => e.stopPropagation()}
+                                    title="Deep Dive with Gemini"
+                                  >
+                                    <span>{t.name}</span>
+                                    <span style={{ fontSize: 12 }}>✨</span>
+                                  </a>
+                                  {t.subTopics.length > 0 && <span style={{ color: 'var(--text-muted)' }}> ({t.subTopics.join(', ')})</span>}
+                                  {t.videoLink && (
+                                    <a 
+                                      href={t.videoLink}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      style={{ marginLeft: 8, fontSize: 11, color: 'var(--color-test)', textDecoration: 'none' }}
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      [▶️ Watch Original Video]
+                                    </a>
+                                  )}
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       )}
@@ -290,25 +306,29 @@ export default function StudyPlanner() {
                   </tr>
                 </thead>
                 <tbody>
-                  {studyPlan.flatMap(s => s.topics.map((t, idx) => (
-                    <tr key={`${s.name}-${idx}`}>
-                      <td style={{ padding: '12px 20px', fontWeight: 600 }}>{getEmoji(s.name)} {s.name}</td>
-                      <td style={{ padding: '12px 20px', color: 'var(--text-muted)' }}>{t.lastCovered}</td>
-                      <td style={{ padding: '12px 20px' }}>
-                        <div style={{ fontWeight: 500 }}>{t.name}</div>
-                        {t.subTopics.length > 0 && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>Subtopics: {t.subTopics.join(', ')}</div>}
-                      </td>
-                      <td style={{ padding: '12px 20px' }}>
-                        {t.videoLink ? (
-                          <a href={t.videoLink} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '4px 8px', fontSize: 11, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 4, width: 'max-content' }}>
-                            ▶️ Watch Tutorial
+                  {studyPlan.flatMap(s => s.topics.map((t, idx) => {
+                    const geminiPrompt = `Explain the Grade 3 ${s.name} topic "${t.name}" to an 8-year-old child in a fun, engaging way. Include real-world examples and a short interactive quiz at the end.`;
+                    return (
+                      <tr key={`${s.name}-${idx}`}>
+                        <td style={{ padding: '12px 20px', fontWeight: 600 }}>{getEmoji(s.name)} {s.name}</td>
+                        <td style={{ padding: '12px 20px', color: 'var(--text-muted)' }}>{t.lastCovered}</td>
+                        <td style={{ padding: '12px 20px' }}>
+                          <div style={{ fontWeight: 500 }}>{t.name}</div>
+                          {t.subTopics.length > 0 && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>Subtopics: {t.subTopics.join(', ')}</div>}
+                        </td>
+                        <td style={{ padding: '12px 20px' }}>
+                          <a href={`https://gemini.google.com/app?prompt=${encodeURIComponent(geminiPrompt)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '6px 12px', fontSize: 11, background: 'rgba(59, 130, 246, 0.1)', color: 'var(--blue)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }}>
+                            ✨ Deep Dive with Gemini
                           </a>
-                        ) : (
-                          <a href={`https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(t.name)}`} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '4px 8px', fontSize: 11, background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>YouTube Search</a>
-                        )}
-                      </td>
-                    </tr>
-                  )))}
+                          {t.videoLink && (
+                            <a href={t.videoLink} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ padding: '6px 12px', marginTop: 8, fontSize: 11, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 6, width: 'max-content' }}>
+                              ▶️ Watch Video
+                            </a>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  }))}
                 </tbody>
               </table>
             )}
