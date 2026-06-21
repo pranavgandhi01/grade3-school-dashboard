@@ -259,40 +259,46 @@ export default function TodoManager() {
 
         {/* Todo List Grouped */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {groupedFiltered.map(([groupName, groupItems]) => (
-            <div key={groupName}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>
-                {groupName} ({groupItems.length})
-              </div>
-              <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {groupItems.map((item) => {
-                  const isExpanded = expandedItemId === item.id;
-                  return (
-                    <div 
-                      className={`todo-item ${item.completed ? 'completed' : ''}`} 
-                      key={item.id} 
-                      style={{ flexDirection: 'column', alignItems: 'stretch', cursor: 'pointer' }}
-                      onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                        <div
-                          className={`todo-checkbox ${item.completed ? 'checked' : ''}`}
-                          onClick={(e) => { e.stopPropagation(); toggleItem(item.id); }}
-                          style={{ marginTop: 2 }}
-                        >
-                          {item.completed && '✓'}
-                        </div>
-                        <div className="todo-text" style={{ flex: 1 }}>
-                          <div className={item.completed ? 'todo-text done' : ''} style={{ fontSize: 14, fontWeight: 500 }}>
-                            {categoryIcons[item.category] || '📋'} {item.text}
+          {groupedFiltered.map(([groupName, groupItems]) => {
+            let dueColor = 'var(--text-secondary)';
+            if (groupName.includes('Overdue')) dueColor = 'var(--color-holiday, #ef4444)';
+            else if (groupName.includes('Immediate')) dueColor = 'var(--color-test, #f59e0b)';
+            else if (groupName.includes('Upcoming')) dueColor = 'var(--color-event, #10b981)';
+
+            return (
+              <div key={groupName}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>
+                  {groupName} ({groupItems.length})
+                </div>
+                <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {groupItems.map((item) => {
+                    const isExpanded = expandedItemId === item.id;
+                    return (
+                      <div 
+                        className={`todo-item ${item.completed ? 'completed' : ''}`} 
+                        key={item.id} 
+                        style={{ flexDirection: 'column', alignItems: 'stretch', cursor: 'pointer' }}
+                        onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+                          <div
+                            className={`todo-checkbox ${item.completed ? 'checked' : ''}`}
+                            onClick={(e) => { e.stopPropagation(); toggleItem(item.id); }}
+                            style={{ marginTop: 2 }}
+                          >
+                            {item.completed && '✓'}
                           </div>
-                          <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                            <span className={`tag ${categoryColors[item.category] || 'tag-blue'}`}>{item.category}</span>
-                            {item.subject && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.subject}</span>}
-                            {item.dueDate && <span className="todo-due">📅 Due: {item.dueDate}</span>}
-                            {item.date && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>From: {item.date}</span>}
+                          <div className="todo-text" style={{ flex: 1 }}>
+                            <div className={item.completed ? 'todo-text done' : ''} style={{ fontSize: 14, fontWeight: 500 }}>
+                              {categoryIcons[item.category] || '📋'} {item.text}
+                            </div>
+                            <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+                              <span className={`tag ${categoryColors[item.category] || 'tag-blue'}`}>{item.category}</span>
+                              {item.subject && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.subject}</span>}
+                              {item.dueDate && <span className="todo-due" style={{ color: item.completed ? 'var(--text-muted)' : dueColor, fontWeight: item.completed ? 'normal' : 600 }}>📅 Due: {item.dueDate}</span>}
+                              {item.date && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>From: {item.date}</span>}
+                            </div>
                           </div>
-                        </div>
                         {item.source === 'manual' && (
                           <button
                             className="btn btn-sm"
@@ -367,8 +373,9 @@ export default function TodoManager() {
           })}
               </div>
             </div>
-          ))}
-          {groupedFiltered.length === 0 && (
+          );
+        })}
+        {groupedFiltered.length === 0 && (
             <div className="empty-state">
               <div className="empty-state-icon">✅</div>
               <div className="empty-state-text">You're all caught up!</div>
