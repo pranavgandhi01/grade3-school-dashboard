@@ -18,9 +18,12 @@ function saveTodos(todos) {
 // Auto-generate homework todos from daily updates
 function getHomeworkItems(DAILY_UPDATES) {
   const items = [];
+  if (!DAILY_UPDATES || !Array.isArray(DAILY_UPDATES)) return items;
+
   DAILY_UPDATES.forEach(update => {
+    if (!update || !update.periods || !Array.isArray(update.periods)) return;
     update.periods.forEach(p => {
-      if (p.homework) {
+      if (p && p.homework) {
         items.push({
           id: `hw-${update.date}-${p.period}`,
           text: `${p.subject}${p.topic ? ` (${p.topic})` : ''}: ${p.homework}`,

@@ -6,8 +6,11 @@ import { useUpdatesContext } from '../context/UpdatesContext';
 function buildStudyPlan(DAILY_UPDATES) {
   const subjects = {};
 
+  if (!DAILY_UPDATES || !Array.isArray(DAILY_UPDATES)) return [];
+
   // Gather topics from daily updates
   DAILY_UPDATES.forEach(update => {
+    if (!update || !update.periods || !Array.isArray(update.periods)) return;
     update.periods.forEach(p => {
       if (!p.subject || p.subject === 'SPA' || p.subject === 'ASSEMBLY') return;
       const rawSubj = p.subject.replace(/\s+SUPPORT$/i, '').replace(/\s+PROGRAMME$/i, '').trim();
