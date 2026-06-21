@@ -106,7 +106,7 @@ function App() {
 
       {/* Main Content */}
       <main className="main-content">
-        <PageComponent />
+        <PageComponent setActivePage={setActivePage} />
       </main>
     </div>
   );

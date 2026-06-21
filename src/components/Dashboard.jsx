@@ -41,7 +41,7 @@ function daysUntil(dateStr) {
   return diff >= 0 ? diff : null;
 }
 
-export default function Dashboard() {
+export default function Dashboard({ setActivePage }) {
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -102,7 +102,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className={`stat-card ${activeStat === 'words' ? 'active-stat' : ''}`} style={{ cursor: 'pointer', border: activeStat === 'words' ? '2px solid var(--accent)' : '' }} onClick={() => setActiveStat(activeStat === 'words' ? null : 'words')}>
+          <div className="stat-card" style={{ cursor: 'pointer' }} onClick={() => setActivePage && setActivePage('dictation')}>
             <div className="stat-icon" style={{ background: 'rgba(59, 130, 246, 0.15)' }}>📖</div>
             <div className="stat-info">
               <div className="stat-value">{totalWords}</div>
@@ -167,16 +167,6 @@ export default function Dashboard() {
                         </div>
                       )}
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {activeStat === 'words' && (
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {DICTATION_WORDS.map((group, i) => (
-                    group.words.map((w, j) => (
-                      <span key={`${i}-${j}`} className="tag tag-blue" style={{ fontSize: 13, padding: '4px 10px', background: 'rgba(59, 130, 246, 0.1)' }}>{w}</span>
-                    ))
                   ))}
                 </div>
               )}
