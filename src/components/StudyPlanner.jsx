@@ -62,6 +62,7 @@ function buildStudyPlan(DAILY_UPDATES) {
 export default function StudyPlanner() {
   const { updates: DAILY_UPDATES } = useUpdatesContext();
   const [activeView, setActiveView] = useState('subjects');
+  const [expandedSubject, setExpandedSubject] = useState(null);
   const studyPlan = buildStudyPlan(DAILY_UPDATES);
 
   const subjectEmojis = {
@@ -194,19 +195,44 @@ export default function StudyPlanner() {
             
             {activeView === 'subjects' && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-                {studyPlan.map((s, i) => (
-                  <div key={i} style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-                    <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
-                      <span style={{ fontSize: 24 }}>{getEmoji(s.name)}</span>
-                      <div style={{ fontSize: 16, fontWeight: 600 }}>{s.name}</div>
+                {studyPlan.map((s, i) => {
+                  const isExpanded = expandedSubject === i;
+                  return (
+                    <div key={i} onClick={() => setExpandedSubject(isExpanded ? null : i)} style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', cursor: 'pointer' }}>
+                      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+                        <span style={{ fontSize: 24 }}>{getEmoji(s.name)}</span>
+                        <div style={{ fontSize: 16, fontWeight: 600 }}>{s.name}</div>
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                        • {s.topics.length} topics covered<br />
+                        {s.testDate ? <span style={{ color: 'var(--color-test)', fontWeight: 600 }}>• Test on {s.testDate}</span> : '• No test scheduled'}<br />
+                        {s.seaDate ? <span style={{ color: 'var(--pink, #ec4899)', fontWeight: 600 }}>• SEA on {s.seaDate}</span> : '• No SEA scheduled'}
+                      </div>
+                      
+                      {isExpanded && s.topics.length > 0 && (
+                        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>Topics Covered</div>
+                          <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            {s.topics.map((t, idx) => (
+                              <li key={idx} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                                <a 
+                                  href={t.videoLink || `https://www.youtube.com/results?search_query=Grade+3+${encodeURIComponent(s.name)}+${encodeURIComponent(t.name)}`} 
+                                  target="_blank" 
+                                  rel="noreferrer"
+                                  style={{ color: 'var(--blue)', textDecoration: 'none' }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {t.name}
+                                </a>
+                                {t.subTopics.length > 0 && <span style={{ color: 'var(--text-muted)' }}> ({t.subTopics.join(', ')})</span>}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                      • {s.topics.length} topics covered<br />
-                      {s.testDate ? <span style={{ color: 'var(--color-test)', fontWeight: 600 }}>• Test on {s.testDate}</span> : '• No test scheduled'}<br />
-                      {s.seaDate ? <span style={{ color: 'var(--pink, #ec4899)', fontWeight: 600 }}>• SEA on {s.seaDate}</span> : '• No SEA scheduled'}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
